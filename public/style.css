@@ -1,0 +1,42 @@
+/* styles */
+/* called by your view template */
+
+/* You might want to try something fancier: */
+/* less: http://lesscss.org/ */
+
+/* *, *:before, *:after {
+  box-sizing: border-box;
+} */
+
+body {
+  font-family: helvetica, arial, sans-serif;
+  background-color: black;
+}
+
+h1 {
+  font-weight: bold;
+  color: pink;
+}
+
+.bold {
+  font-weight: bold;
+}
+
+p {
+  max-width: 600px;
+}
+
+html, body {
+  margin: 0px;
+}
+.full-window {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+}
+canvas {
+  display: block;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+}
