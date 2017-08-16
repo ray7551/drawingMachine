@@ -7,13 +7,28 @@
   "description": "What am I about?",
   "main": "server.js",
   "scripts": {
-    "build": "browserify public/client.js -o public/bundle.js",
-    "start": "npm run build && node server.js"
+    "build": "webpack",
+    "start": "set PORT=3000 && npm run build && node server.js"
   },
   "dependencies": {
-    "express": "^4.15.3",
+    "browserify": "^14.4.0",
     "color": "^2.0.0",
-    "browserify": "^14.4.0"
+    "controlkit": "^0.1.9",
+    "express": "^4.15.3",
+    "quicksettings": "https://github.com/bit101/quicksettings#3.0.3"
+  },
+  "devDependencies": {
+    "babel": "latest",
+    "babel-core": "^6.25.0",
+    "babel-loader": "latest",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-preset-env": "^1.6.0",
+    "babel-preset-es2015": "latest",
+    "file-loader": "latest",
+    "normalize-css": "latest",
+    "resolve-url": "latest",
+    "url-loader": "latest",
+    "webpack": "latest"
   },
   "engines": {
     "node": "8.x"

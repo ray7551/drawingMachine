@@ -1,107 +1,122 @@
-var Color = require('color');
-var Arm = require('./Arm');
+const Color = require('color');
+import Arm from './Arm';
+import Param from './Param';
 
 // colors below come from https://noni.cmiscm.com/ by Jongmin Kim
-var colors = ["#FFEB3B", "#FFC107", "#FF9800", "#FF5722", "#795548", "#607D8B", 
-    "#F44336", "#E91E63", "#9C27B0", "#673AB7", "#3F51B5", "#2196F3", "#03A9F4",
-    "#00BCD4", "#009688", "#4CAF50", "#8BC34A", "#CDDC39"];
-var baseColors = colors.map(function(color) {
+let colors = ["#FFFFFF", "#FFEB3B", "#FFC107", "#FF9800", "#FF5722", "#795548", "#607D8B",
+  "#F44336", "#E91E63", "#9C27B0", "#673AB7", "#3F51B5", "#2196F3", "#03A9F4",
+  "#00BCD4", "#009688", "#4CAF50", "#8BC34A", "#CDDC39"
+];
+let baseColors = colors.map(function(color) {
   return new Color(color);
 });
 
-window.onload = function() {
-  var canvas = document.getElementById("canvas"),
-    canvas2 = document.getElementById("canvas2"),
-    context = canvas.getContext("2d"),
-    context2 = canvas2.getContext("2d"),
-    width = (canvas.width = canvas2.width = document.body.clientWidth),
-    height = (canvas.height = canvas2.height = document.body.clientHeight),
-    drawing = false;
-  context2.fillStyle = "#010101";
-  context2.fillRect(0, 0, width, width);
-  context2.strokeStyle = baseColors[0];
-  console.log(context2.strokeStyle);
+document.addEventListener('DOMContentLoaded', function() {
+  let armsCanvas = document.getElementById("arms"),
+    curveCanvas = document.getElementById("curve"),
+    armsCtx = armsCanvas.getContext("2d"),
+    curveCtx = curveCanvas.getContext("2d"),
+    width = (armsCanvas.width = curveCanvas.width = document.body.clientWidth),
+    height = (armsCanvas.height = curveCanvas.height = document.body.clientHeight),
+    armUnit = Math.min(width, height) / 200;
+  curveCtx.fillStyle = "rgba(0,0,0,0)";
+  curveCtx.fillRect(0, 0, width, width);
+  curveCtx.strokeStyle = baseColors[0];
+  console.log(curveCtx.strokeStyle);
 
-  var param = {
-    drawSpeed: 30,
-    rewind: false,
-    lineWidth: 0.3,
-    running: true,
-    colorChangePeriod: 20,
-    'pause/run': function() {
-      param.running = !(param.running);
-      if(param.running) update();
-    },
-    clear: function() {
-      context2.fillStyle = "#010101";
-      context2.fillRect(0, 0, width, width);
-    }
-  };
-  var gui = new dat.GUI();
-  gui.add(param, "drawSpeed", 0, 500);
-  gui.add(param, "rewind");
-  gui.add(param, "lineWidth", 0, 5);
-  gui.add(param, "pause/run");
-  gui.add(param, "clear");
-  gui.add(param, "colorChangePeriod", 2, 600);
+  let param = new Param(curveCtx, drawArms, update);
 
-  var arm = Arm.create(width / 2, height / 2, {length: 61, amp: 2.5}),
+  let arm = new Arm({x: width / 2, y: height / 2}, { length: 30 * armUnit, amp: 2.5 }),
     angle = 0,
-    arm2 = Arm.create(arm.getEndX(), arm.getEndY(), {length: 83, amp: 2.1, w: 0.5, phase: 2-Math.PI/2}),
-    arm3 = Arm.create(arm2.getEndX(), arm2.getEndY(), {length: 71, amp: 2.3, w: 1.5, phase: -0.5});
+    arm2 = new Arm(arm, { length: 33 * armUnit, amp: 2.12, w: 0.5, phase: 2 - Math.PI / 2 }),
+    arm3 = new Arm(arm2, { length: 31 * armUnit, amp: 2.34, w: 1.5, phase: -0.5 });
+  arm.angle = arm.calcAngle(angle);
+  arm2.angle = arm2.calcAngle(angle);
+  arm3.angle = arm3.calcAngle(angle);
+  arm2.x = arm.endX;
+  arm2.y = arm.endY;
+  arm3.x = arm2.endX;
+  arm3.y = arm2.endY;
+  param.arms = [arm, arm2, arm3];
 
-  arm2.parent = arm;
-  arm3.parent = arm2;
-    arm.angle = 0;
-    arm2.angle = 0;
-    arm3.angle = 0;
-    arm2.x = arm.getEndX();
-    arm2.y = arm.getEndY();
-    arm3.x = arm2.getEndX();
-    arm3.y = arm2.getEndY();
+  // let isPressing = false;
+  curveCanvas.addEventListener('touchstart', () => {
+    if(param.drawMode==='press-to-run' && !param.running) {
+      // isPressing = true;
+      param.running = true;
+      update();
+    }
+  });
+  curveCanvas.addEventListener('touchend', () => {
+    if(param.drawMode==='press-to-run') {
+      // isPressing = true;
+      param.running = false;
+    }
+  });
+  curveCanvas.addEventListener('mousedown', (evt) => {
+    if(evt.button === 0 && param.drawMode==='press-to-run' && !param.running) {
+      // isPressing = true;
+      param.running = true;
+      update();
+    }
+  });
+  curveCanvas.addEventListener('mouseup', (evt) => {
+    if(evt.button === 0 && param.drawMode==='press-to-run') {
+      // isPressing = false;
+      param.running = false;
+    }
+  });
 
-  var lastFrameTime = window.performance.now();
+  //let lastFrameTime = window.performance.now();
   update();
-  drawing = true;
-  
   function update() {
     //console.log(arm3.getEndX(), arm3.getEndY());
     // var t = window.performance.now();
     // var deltaT = t - lastFrameTime;
     // lastFrameTime = t;
-    
-    context2.lineWidth = param.lineWidth;
-    
-    var colorIndex = Math.floor(Math.abs(angle) / param.colorChangePeriod) % (baseColors.length - 1);
-    var mixRate = angle % param.colorChangePeriod / param.colorChangePeriod;
-    context2.strokeStyle = baseColors[colorIndex].mix(baseColors[colorIndex + 1], mixRate).string();
-    //if (drawing) {
-      context2.beginPath();
-      context2.moveTo(arm3.getEndX(), arm3.getEndY());
-    //}
 
-    context.clearRect(0, 0, width, height);
-    arm.angle = arm.calcAngle(angle);
-    arm2.angle = arm2.calcAngle(angle);
-    arm3.angle = arm3.calcAngle(angle);
-    arm.angle = Math.sin(angle) * 2.5;
-    arm2.angle = Math.sin(angle * 0.5 + 2) * 2.12;
-    arm3.angle = Math.sin(angle * 1.498 - 0.5) * 2.34;
-    arm2.x = arm.getEndX();
-    arm2.y = arm.getEndY();
-    arm3.x = arm2.getEndX();
-    arm3.y = arm2.getEndY();
-    angle += param.drawSpeed / 1000  * (param.rewind ? -1 : 1);// * deltaT;
-    arm.render(context);
-    arm2.render(context);
-    arm3.render(context);
+    curveCtx.lineWidth = param.lineWidth;
+
+    let colorIndex = (
+        Math.floor(Math.abs(angle) / param.colorChangePeriod)
+        + param.changeColorTimes
+      ) % (baseColors.length - 1);
+    let mixRate = angle % param.colorChangePeriod / param.colorChangePeriod;
+    curveCtx.strokeStyle = baseColors[colorIndex].mix(baseColors[colorIndex + 1], mixRate).string();
+    let {x, y} = {x: arm3.endX, y: arm3.endY};
+
+    arm.angle = arm.calcAngle(Math.abs(angle));
+    arm2.angle = arm2.calcAngle(Math.abs(angle));
+    arm3.angle = arm3.calcAngle(Math.abs(angle));
+    arm2.x = arm.endX;
+    arm2.y = arm.endY;
+    arm3.x = arm2.endX;
+    arm3.y = arm2.endY;
+    angle += param.drawSpeed / 1000 * (param.rewind ? -1 : 1); // * deltaT;
+
+    drawCurve(x, y, arm3.endX, arm3.endY);
+    drawArms();
 
     //console.log(arm3.getEndX(), arm3.getEndY());
-    //if (drawing) {
-      context2.lineTo(arm3.getEndX(), arm3.getEndY());
-      context2.stroke();
-    //}
+    curveCtx.lineTo(arm3.endX, arm3.endY);
+    curveCtx.stroke();
     //param.running = false;
-    if(param.running) requestAnimationFrame(update);
+    if (param.running) requestAnimationFrame(update);
   }
-};
+
+  function drawArms(){
+    armsCtx.clearRect(0, 0, width, height);
+    if(!param.hideArms) {
+      arm.render(armsCtx);
+      arm2.render(armsCtx);
+      arm3.render(armsCtx);
+    }
+  }
+  function drawCurve(x, y, endX, endY) {
+    curveCtx.beginPath();
+    curveCtx.moveTo(x, y);
+
+    curveCtx.lineTo(endX, endY);
+    curveCtx.stroke();
+  }
+});
