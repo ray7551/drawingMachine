@@ -44,7 +44,7 @@ export default class Param {
 
   clear() {
     let canvas = this.ctx.canvas;
-    this.ctx.fillStyle = "#010101";
+    this.ctx.fillStyle = "rgba(0,0,0,0)";
     this.ctx.fillRect(0, 0, canvas.width, canvas.height);
   }
 

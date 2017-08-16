@@ -1,6 +1,7 @@
 const Color = require('color');
 import Arm from './Arm';
 import Param from './Param';
+import {onTapHold} from './utils';
 
 // colors below come from https://noni.cmiscm.com/ by Jongmin Kim
 let colors = ["#FFFFFF", "#FFEB3B", "#FFC107", "#FF9800", "#FF5722", "#795548", "#607D8B",
@@ -39,31 +40,17 @@ document.addEventListener('DOMContentLoaded', function() {
   arm3.y = arm2.endY;
   param.arms = [arm, arm2, arm3];
 
-  // let isPressing = false;
-  curveCanvas.addEventListener('touchstart', () => {
-    if(param.drawMode==='press-to-run' && !param.running) {
-      // isPressing = true;
-      param.running = true;
-      update();
-    }
-  });
-  curveCanvas.addEventListener('touchend', () => {
-    if(param.drawMode==='press-to-run') {
-      // isPressing = true;
-      param.running = false;
-    }
-  });
-  curveCanvas.addEventListener('mousedown', (evt) => {
-    if(evt.button === 0 && param.drawMode==='press-to-run' && !param.running) {
-      // isPressing = true;
-      param.running = true;
-      update();
-    }
-  });
-  curveCanvas.addEventListener('mouseup', (evt) => {
-    if(evt.button === 0 && param.drawMode==='press-to-run') {
-      // isPressing = false;
-      param.running = false;
+  onTapHold(curveCanvas, {
+    onHoldStart: () => {
+      if (param.drawMode === 'press-to-run' && !param.running) {
+        param.running = true;
+        update();
+      }
+    },
+    onHoldEnd: () => {
+      if(param.drawMode==='press-to-run') {
+        param.running = false;
+      }
     }
   });
 
