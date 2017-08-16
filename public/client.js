@@ -16,18 +16,18 @@ Zepto(function($) {
   // disable Safari Elastic Scrolling
   // @see https://stackoverflow.com/a/12765599/3052933
   // @see https://codepen.io/yisi/pen/PqapWZ
-  // $('body').on('touchmove', function(e) {
-  //   let searchTerms = '.scroll, .scroll-y, .scroll-x',
-  //     $target = $(e.target),
-  //     parents = $target.parents(searchTerms);
-  //
-  //   if (parents.length || $target.hasClass(searchTerms)) {
-  //     // ignore as we want the scroll to happen
-  //     // (This is where we may need to check if at limit)
-  //   } else {
-  //     e.preventDefault()
-  //   }
-  // });
+  $('body').on('touchmove', function(e) {
+    let searchTerms = '.scroll, .scroll-y, .scroll-x',
+      $target = $(e.target),
+      parents = $target.parents(searchTerms);
+
+    if (parents.length || $target.hasClass(searchTerms)) {
+      // ignore as we want the scroll to happen
+      // (This is where we may need to check if at limit)
+    } else {
+      e.preventDefault()
+    }
+  });
 
 
   let armsCanvas = document.getElementById("arms"),
