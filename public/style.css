@@ -6,14 +6,12 @@ html, body {
   margin: 0;
 }
 body {
+  height: 100%;
+  overflow: hidden;
   font-family: helvetica, arial, sans-serif;
   background-color: black;
 }
 
-body {
-  height: 100%;
-  overflow: hidden;
-}
 .scroll, .scroll-y, .scroll-x {
   -webkit-overflow-scrolling: touch;
 }
