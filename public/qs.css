@@ -1,15 +1,15 @@
 .qs_main {
-  background-color: rgba(12, 12, 12, 0.8);
-  text-align: left;
-  position: absolute;
   width: 200px;
-  font: 12px sans-serif;
-  box-shadow: none;
-  user-select: none;
-  -webkit-user-select: none;
-  color: #bbbbbb;
+  position: absolute;
   border: 1px solid #666666;
   border-radius: 4px;
+  box-shadow: none;
+  background-color: rgba(12, 12, 12, 0.8);
+  font: 12px sans-serif;
+  color: #bbbbbb;
+  text-align: left;
+  user-select: none;
+  -webkit-user-select: none;
 }
 .qs_content {
   overflow-y: auto;

@@ -12,7 +12,24 @@ let baseColors = colors.map(function(color) {
   return new Color(color);
 });
 
-document.addEventListener('DOMContentLoaded', function() {
+Zepto(function($) {
+  // disable Safari Elastic Scrolling
+  // @see https://stackoverflow.com/a/12765599/3052933
+  // @see https://codepen.io/yisi/pen/PqapWZ
+  // $('body').on('touchmove', function(e) {
+  //   let searchTerms = '.scroll, .scroll-y, .scroll-x',
+  //     $target = $(e.target),
+  //     parents = $target.parents(searchTerms);
+  //
+  //   if (parents.length || $target.hasClass(searchTerms)) {
+  //     // ignore as we want the scroll to happen
+  //     // (This is where we may need to check if at limit)
+  //   } else {
+  //     e.preventDefault()
+  //   }
+  // });
+
+
   let armsCanvas = document.getElementById("arms"),
     curveCanvas = document.getElementById("curve"),
     armsCtx = armsCanvas.getContext("2d"),
@@ -39,6 +56,9 @@ document.addEventListener('DOMContentLoaded', function() {
   arm3.x = arm2.endX;
   arm3.y = arm2.endY;
   param.arms = [arm, arm2, arm3];
+
+  //let stage = document.body;
+  // let mc = new Hammer(curveCanvas);
 
   onTapHold(curveCanvas, {
     onHoldStart: () => {

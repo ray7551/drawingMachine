@@ -14,7 +14,7 @@ export default class Param {
     this.drawArmsFn = drawArmsFn;
     this.updateFn = updateFn;
     Qs.useExtStyleSheet();
-    this.gui = Qs.create(document.body.clientWidth - 220, 60, 'Control Panel')
+    this.gui = Qs.create(document.body.clientWidth - 220, 50, 'Control Panel')
       //.setDraggable(false)
       //.setCollapsible(false)
       .collapse()
@@ -29,6 +29,7 @@ export default class Param {
       .addButton('clear');
     // gui.add(param, "pause/run");
 
+    document.querySelector('.qs_main').classList.add('scroll');
     let $title = document.querySelector('.qs_title_bar');
     $title.classList.add('collapse');
     $title.addEventListener('click', (evt) => {
