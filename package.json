@@ -7,28 +7,36 @@
   "description": "What am I about?",
   "main": "server.js",
   "scripts": {
-    "build": "webpack",
-    "start": "set PORT=3000 && npm run build && node server.js"
+    "build": "set NODE_ENV=production&& webpack",
+    "prod-build": "set NODE_ENV=production&& webpack -p",
+    "start": "set PORT=3000&& npm run build && node server.js",
+    "dev": "set NODE_ENV=dev&& webpack-dev-server",
+    "dev-build": "set NODE_ENV=dev&& webpack"
   },
   "dependencies": {
-    "browserify": "^14.4.0",
     "color": "^2.0.0",
-    "controlkit": "^0.1.9",
+    "deepmerge": "^1.5.1",
     "express": "^4.15.3",
-    "quicksettings": "https://github.com/bit101/quicksettings#3.0.3"
+    "quicksettings": "https://github.com/bit101/quicksettings#3.0.3",
+    "zepto": "^1.2.0"
   },
   "devDependencies": {
-    "babel": "latest",
+    "autodll-webpack-plugin": "^0.2.1",
+    "babel": "^6.23.0",
     "babel-core": "^6.25.0",
-    "babel-loader": "latest",
+    "babel-loader": "^7.1.1",
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-preset-env": "^1.6.0",
-    "babel-preset-es2015": "latest",
-    "file-loader": "latest",
-    "normalize-css": "latest",
-    "resolve-url": "latest",
-    "url-loader": "latest",
-    "webpack": "latest"
+    "babel-preset-es2015": "^6.24.1",
+    "css-loader": "^0.28.5",
+    "extract-text-webpack-plugin": "^3.0.0",
+    "file-loader": "^0.11.2",
+    "html-loader": "^0.5.1",
+    "html-webpack-plugin": "^2.30.1",
+    "imports-loader": "^0.7.1",
+    "style-loader": "^0.18.2",
+    "webpack": "^3.5.5",
+    "webpack-dev-server": "^2.7.1"
   },
   "engines": {
     "node": "8.x"
@@ -40,6 +48,6 @@
   "keywords": [
     "node",
     "glitch",
-    "express"
+    "draw"
   ]
 }
