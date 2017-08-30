@@ -35,7 +35,7 @@ let config = {
   },
   devtool: isProduction ? false : 'cheap-module-source-map',
   devServer: {
-    inline: false, // iframe mode, js about live-reloading will not mixed with application file
+    // inline: false, // iframe mode, js about live-reloading will not mixed with application file
     // contentBase: dir.build,
     // publicPath: '/',
     disableHostCheck: true,

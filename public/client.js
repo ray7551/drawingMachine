@@ -1,5 +1,7 @@
 const Color = require('color');
+import Zepto from 'zepto';
 import Arm from './Arm';
+import FKSystem from './FKSystem';
 import Param from './Param';
 import {onTapHold} from './utils';
 
@@ -11,6 +13,8 @@ let colors = ["#FFFFFF", "#FFEB3B", "#FFC107", "#FF9800", "#FF5722", "#795548", 
 let baseColors = colors.map(function(color) {
   return new Color(color);
 });
+
+console.clear();
 
 Zepto(function($) {
   // disable Safari Elastic Scrolling
@@ -30,35 +34,45 @@ Zepto(function($) {
   });
 
 
+  let {width, height} = document.body.getBoundingClientRect();
   let armsCanvas = document.getElementById("arms"),
     curveCanvas = document.getElementById("curve"),
     armsCtx = armsCanvas.getContext("2d"),
-    curveCtx = curveCanvas.getContext("2d"),
-    width = (armsCanvas.width = curveCanvas.width = document.body.clientWidth),
-    height = (armsCanvas.height = curveCanvas.height = document.body.clientHeight),
-    armUnit = Math.min(width, height) / 200;
+    curveCtx = curveCanvas.getContext("2d");
+  armsCanvas.width = curveCanvas.width = width,
+  armsCanvas.height = curveCanvas.height = height,
   curveCtx.fillStyle = "rgba(0,0,0,0)";
   curveCtx.fillRect(0, 0, width, width);
   curveCtx.strokeStyle = baseColors[0];
   console.log(curveCtx.strokeStyle);
 
+  let maxLen = Math.min(width, height) / 2;
+
   let param = new Param(curveCtx, drawArms, update);
+  let fk = new FKSystem(armsCanvas, maxLen, {x: width/2, y: height/2}, {
+    length: param.armLengths[0] * maxLen,
+    amp: 2.5,
+    initAngle: 1.2
+  }).addArm({
+    length: param.armLengths[1] * maxLen,
+    amp: 2.12,
+    w: 0.5,
+    initAngle: Math.PI / 2,
+    // phaseOffset: Math.PI
+  }).addArm({
+    length: param.armLengths[2] * maxLen,
+    amp: 2.12,
+    w: 0.5,
+    initAngle: Math.PI / 2,
+    // phaseOffset: Math.PI
+  });
+  fk.render();
 
-  let arm = new Arm({x: width / 2, y: height / 2}, { length: 30 * armUnit, amp: 2.5 }),
-    angle = 0,
-    arm2 = new Arm(arm, { length: 33 * armUnit, amp: 2.12, w: 0.5, phase: 2 - Math.PI / 2 }),
-    arm3 = new Arm(arm2, { length: 31 * armUnit, amp: 2.34, w: 1.5, phase: -0.5 });
-  arm.angle = arm.calcAngle(angle);
-  arm2.angle = arm2.calcAngle(angle);
-  arm3.angle = arm3.calcAngle(angle);
-  arm2.x = arm.endX;
-  arm2.y = arm.endY;
-  arm3.x = arm2.endX;
-  arm3.y = arm2.endY;
-  param.arms = [arm, arm2, arm3];
-
-  //let stage = document.body;
-  // let mc = new Hammer(curveCanvas);
+  param.fk = fk;
+  if(param.drawMode == 'autorun') {
+    param.running = true;
+    update();
+  }
 
   onTapHold(curveCanvas, {
     onHoldStart: () => {
@@ -68,61 +82,45 @@ Zepto(function($) {
       }
     },
     onHoldEnd: () => {
-      if(param.drawMode==='press-to-run') {
+      if(param.drawMode === 'press-to-run') {
         param.running = false;
       }
     }
   });
 
   //let lastFrameTime = window.performance.now();
-  update();
   function update() {
-    //console.log(arm3.getEndX(), arm3.getEndY());
     // var t = window.performance.now();
     // var deltaT = t - lastFrameTime;
     // lastFrameTime = t;
-
     curveCtx.lineWidth = param.lineWidth;
 
     let colorIndex = (
-        Math.floor(Math.abs(angle) / param.colorChangePeriod)
+        Math.floor(Math.abs(fk.t) / param.colorChangePeriod)
         + param.changeColorTimes
       ) % (baseColors.length - 1);
-    let mixRate = angle % param.colorChangePeriod / param.colorChangePeriod;
+    let mixRate = fk.t % param.colorChangePeriod / param.colorChangePeriod;
     curveCtx.strokeStyle = baseColors[colorIndex].mix(baseColors[colorIndex + 1], mixRate).string();
-    let {x, y} = {x: arm3.endX, y: arm3.endY};
+    let {x, y} = {x: fk.lastArm.endX, y: fk.lastArm.endY};
 
-    arm.angle = arm.calcAngle(Math.abs(angle));
-    arm2.angle = arm2.calcAngle(Math.abs(angle));
-    arm3.angle = arm3.calcAngle(Math.abs(angle));
-    arm2.x = arm.endX;
-    arm2.y = arm.endY;
-    arm3.x = arm2.endX;
-    arm3.y = arm2.endY;
-    angle += param.drawSpeed / 1000 * (param.rewind ? -1 : 1); // * deltaT;
+    fk.t += param.drawSpeed / 1000 * (param.rewind ? -1 : 1); // * deltaT;
+    fk.updateArms();
 
-    drawCurve(x, y, arm3.endX, arm3.endY);
+    drawCurve(x, y, fk.lastArm.endX, fk.lastArm.endY);
     drawArms();
 
-    //console.log(arm3.getEndX(), arm3.getEndY());
-    curveCtx.lineTo(arm3.endX, arm3.endY);
-    curveCtx.stroke();
-    //param.running = false;
     if (param.running) requestAnimationFrame(update);
   }
 
   function drawArms(){
     armsCtx.clearRect(0, 0, width, height);
     if(!param.hideArms) {
-      arm.render(armsCtx);
-      arm2.render(armsCtx);
-      arm3.render(armsCtx);
+      fk.render();
     }
   }
   function drawCurve(x, y, endX, endY) {
     curveCtx.beginPath();
     curveCtx.moveTo(x, y);
-
     curveCtx.lineTo(endX, endY);
     curveCtx.stroke();
   }

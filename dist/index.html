@@ -1,12 +1,3 @@
-<!-- This is a static file -->
-<!-- served from your routes in server.js -->
-
-<!-- You might want to try something fancier: -->
-<!-- html/nunjucks docs: https://mozilla.github.io/nunjucks/ -->
-<!-- pug: https://pugjs.org/ -->
-<!-- haml: http://haml.info/ -->
-<!-- hbs(handlebars): http://handlebarsjs.com/ -->
-
 <!DOCTYPE html>
 <html>
   <head>
@@ -16,11 +7,10 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="initial-scale=1,maximum-scale=1, user-scalable=no, minimal-ui">
-    <link rel="stylesheet" href="/qs.css">
-    <link rel="stylesheet" href="/style.css">
-  </head>
-  <body class="full-window">
-    <header class="unselectable">
+    <meta name="msapplication-tap-highlight" content="no" />
+  <link href="app.9925c852a5cef3943a6a.css" rel="stylesheet"></head>
+  <body class="full-window unselectable">
+    <header>
       <h1>
         Drawing Machine
       </h1>
@@ -32,13 +22,21 @@
     </main>
 
     <footer class="unselectable">
-      <a class="glitch" href="https://glitch.com/edit/#!/remix/drawing-machine"><img src="./glitch-dark.svg" alt="Remix on Glitch" /></a>
+      <a class="glitch" href="https://glitch.com/edit/#!/remix/drawing-machine"><img src="glitch-dark.efa8315a1d6c8487f05430f15a7d90bf.svg" alt="Remix on Glitch" /></a>
     </footer>
 
     <!-- Your web-app is https, so your scripts need to be too -->
-<!--     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.12/p5.min.js"></script> -->
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.6.5/dat.gui.min.js"></script> -->
-    <script src="/bundle.js"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.12/p5.min.js"></script> -->
+    <!-- <script src="//cdnjs.cloudflare.com/ajax/libs/zepto/1.2.0/zepto.min.js"></script> -->
+    <!-- <script src="/app.js"></script> -->
 
-  </body>
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+      ga('create', 'UA-26088031-2', 'auto');
+      ga('send', 'pageview');
+    </script>
+  <script type="text/javascript" src="js/app.9925c852a5cef3943a6a.js"></script></body>
 </html>
