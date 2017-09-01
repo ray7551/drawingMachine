@@ -23,7 +23,11 @@ let onTapHold = function (target, {onHoldStart=noop, onHoldEnd=noop}) {
   });
 };
 
+let uniq = function(...args) {
+  return [...new Set(args)];
+}
+
 
 export {
-  bind, onTapHold
+  bind, onTapHold, uniq
 }

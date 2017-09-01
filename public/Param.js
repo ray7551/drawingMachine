@@ -1,4 +1,6 @@
 import qs from './qs';
+import {FKDrawMode} from './FKSystem';
+import {uniq} from './utils';
 
 export default class Param {
   drawSpeed = 30;
@@ -6,7 +8,8 @@ export default class Param {
   lineWidth = 0.7;
   running = false;
   colorChangePeriod = 20;
-  drawMode = 'autorun';
+  runMode = 'autorun';
+  drawMode = FKDrawMode.trippy;
   hideArms = false;
   changeColorTimes = 0;
   armLengths = [0.6, 0.2, 0.2];
@@ -19,7 +22,7 @@ export default class Param {
       //.setDraggable(false)
       //.setCollapsible(false)
       .setGlobalChangeHandler(this.onChange.bind(this))
-      .addDropDown('drawMode', ['autorun', 'press-to-run'])
+      .addDropDown('runMode', ['autorun', 'press-to-run'])
       .addRange('drawSpeed', 0, 500, this.drawSpeed, 1)
       .addBoolean('rewind', this.rewind)
       .addRange('lineWidth', 0, 6, this.lineWidth, 0.1)
@@ -37,14 +40,26 @@ export default class Param {
         this.drawArmsFn();
       })
       .addBoolean('hideArms', this.hideArms)
-      .addButton('clear');
+      .addButton('clear')
+      .addButton('restart');
 
     document.querySelector('.qs_main').classList.add('scroll');
+  }
+
+  setFk(fk) {
+    this.fk = fk;
+    console.log(uniq(this.fk.drawMode, ...Object.values(FKDrawMode)));
+    this.gui.addDropDown('drawMode', uniq(this.fk.drawMode, ...Object.values(FKDrawMode)));
   }
 
   setRunning() {
     this.running = !(this.running);
     if (this.running) this.updateFn();
+  }
+
+  restart() {
+    this.clear();
+    this.fk.reset();
   }
 
   clear() {
@@ -62,12 +77,17 @@ export default class Param {
         this[key]();
         break;
       default:
-        if(key === 'drawMode') {
-          this.setRunning(this.drawMode === 'autorun');
-          this.drawMode = this.gui.getValue(key).value;
+        if(key === 'runMode') {
+          this.setRunning();
+          this.runMode = this.gui.getValue(key).value;
           return;
         }
-        // todo: why changing drawSpeed make arms move?
+        if(key === 'drawMode') {
+          this.drawMode = this.gui.getValue(key).value;
+          this.fk.setDrawMode(this.drawMode);
+          return;
+        }
+
         this[key] = this.gui.getValue(key);
         if(key === 'hideArms') {
           this.drawArmsFn();

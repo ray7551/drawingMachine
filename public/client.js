@@ -68,21 +68,21 @@ Zepto(function($) {
   });
   fk.render();
 
-  param.fk = fk;
-  if(param.drawMode == 'autorun') {
+  param.setFk(fk);
+  if(param.runMode == 'autorun') {
     param.running = true;
     update();
   }
 
   onTapHold(curveCanvas, {
     onHoldStart: () => {
-      if (param.drawMode === 'press-to-run' && !param.running) {
+      if (param.runMode === 'press-to-run' && !param.running) {
         param.running = true;
         update();
       }
     },
     onHoldEnd: () => {
-      if(param.drawMode === 'press-to-run') {
+      if(param.runMode === 'press-to-run') {
         param.running = false;
       }
     }
@@ -101,6 +101,8 @@ Zepto(function($) {
       ) % (baseColors.length - 1);
     let mixRate = fk.t % param.colorChangePeriod / param.colorChangePeriod;
     curveCtx.strokeStyle = baseColors[colorIndex].mix(baseColors[colorIndex + 1], mixRate).string();
+
+    fk.lastArm.color = curveCtx.strokeStyle;
     let {x, y} = {x: fk.lastArm.endX, y: fk.lastArm.endY};
 
     fk.t += param.drawSpeed / 1000 * (param.rewind ? -1 : 1); // * deltaT;
