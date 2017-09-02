@@ -70,7 +70,7 @@ let config = {
     loaders: [{
       loader: 'babel-loader',
       test: /\.js$/,
-      exclude: /node_modules/,
+      exclude: [/node_modules/, /lib/],
       options: {
         presets: [
           isProduction ? 'es2015' : ["env", {
@@ -106,6 +106,7 @@ let config = {
       use: {
         loader: 'html-loader',
         options: {
+          interpolate: 'require',
           // attrs: [':data-src']
           attrs: ['img:src', 'link:href']
         }

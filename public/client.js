@@ -14,7 +14,7 @@ let baseColors = colors.map(function(color) {
   return new Color(color);
 });
 
-console.clear();
+// console.clear();
 
 Zepto(function($) {
   // disable Safari Elastic Scrolling

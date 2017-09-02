@@ -1,37 +1,94 @@
 .qs_main {
   width: 200px;
-  position: absolute;
+  position: fixed;
+  left: auto!important;
+  right: 4vw!important;
+  top: 4vh!important;
   border: 1px solid #666666;
   border-radius: 4px;
   box-shadow: none;
   background-color: rgba(12, 12, 12, 0.8);
-  font: 12px sans-serif;
+  font: 16px sans-serif;
   color: #bbbbbb;
   text-align: left;
   user-select: none;
   -webkit-user-select: none;
+  outline: none;
+}
+
+
+.qs_collapse.qs_main {
+  width: auto;
+  overflow: hidden;
 }
 .qs_content {
   overflow-y: auto;
 }
+.qs_collapse .qs_content {
+  display: none;
+}
+
 .qs_title_bar {
   text-align: center;
   user-select: none;
   -webkit-user-select: none;
-  cursor: move;
-  padding: .5em .8em .5em .5em;
+/*   cursor: move; */
   font-weight: bold;
   border: none;
   color: #eee;
 }
-.qs_title_bar:after {
+.qs_collapse .qs_title_bar {
+  padding: 0;
+  cursor: pointer;
+}
+.qs_title_bar span {
+  line-height: 2.5em;
+}
+.qs_collapse .qs_title_bar span{
+  display: none;
+}
+.qs_toggle{
+  width: 1.4em;
+  height: 1.5em;
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 1.6em;
+  font-weight: 700;
+  display: inline-block;
+  border-radius: 4px;
+  text-align: center;
+  vertical-align: middle;
+}
+.qs_collapse .qs_toggle {
+  position: static;
+  width: 1em;
+  height: 1em;
+  line-height: 1em;
+  font-size: 3em;
+}
+.qs_toggle:hover {
+  color: #fff;
+  cursor: pointer;
+}
+.qs_collapse .qs_toggle:hover {
+  background-color: rgba(12, 12, 12, 0.8);
+}
+.qs_toggle:hover{
+  background-color: #5e7380;
+}
+
+.qs_toggle:after {
   content: '\25B2';
-  float: right;
+  font-style: normal;
 }
-.qs_title_bar.collapse:after {
-  content: '\25BC';
-  float: right;
+.qs_collapse .qs_toggle:after {
+  content: '\2699';
+  width: 1em;
+  height: 1em;
+  margin-top: -2%;
 }
+
 .qs_container {
   margin: 5px;
   padding: 5px;
@@ -40,8 +97,6 @@
 .qs_container_selected {
   background-color: #222;
 }
-
-/*========== end range ==========*/
 
 .qs_button {
   background-color: #000000;
@@ -69,7 +124,7 @@
   left: -99999px;
 }
 .qs_checkbox span {
-  height: 16px;
+  height: 1em;
   width: 100%;
   display: block;
   text-indent: 20px;
@@ -81,13 +136,14 @@
 .qs_checkbox_label {
   position: absolute;
   left: 30px;
+  line-height: 1em;
 }
 .qs_label {
   margin-bottom: 3px;
   user-select: none;
   -webkit-user-select: none;
   cursor: default;
-  font: 12px sans-serif;
+  font: .9em sans-serif;
 }
 .qs_text_input {
   -webkit-box-sizing: border-box;
@@ -205,7 +261,7 @@
 }
 
 
-/*========== range ==========*/
+/*========== range start ==========*/
 
 .qs_range {
   width: 100%;
@@ -305,6 +361,54 @@ input[type=range].qs_range:focus::-ms-fill-lower {
 }
 input[type=range].qs_range:focus::-ms-fill-upper {
   background: #575757;
+}
+/*============= range end =============*/
+
+/* multi range */
+input[type="range"].multiRange {
+  display: block;
+  height: 2em;
+  margin: 0;
+  pointer-events: none;
+}
+input[type="range"].multiRange + input[type="range"].multiRange {
+  margin-top: -2em;
+}
+
+input[type="range"].multiRange::-webkit-slider-thumb {
+  pointer-events: all;
+}
+
+input[type="range"].multiRange::-moz-range-thumb {
+  pointer-events: all;
+}
+
+input[type="range"].multiRange::-ms-thumb {
+  pointer-events: all;
+}
+
+input[type=range].multiRange:focus::-webkit-slider-runnable-track {
+  background: transparent;
+  border-color: transparent;
+}
+
+input[type=range].multiRange::-webkit-slider-runnable-track {
+  background: transparent;
+  border-color: transparent;
+}
+
+input[type=range].multiRange::-moz-range-track {
+  background: transparent;
+  border-color: transparent;
+}
+
+input[type=range].multiRange::-ms-track {
+  background: transparent;
+  border-color: transparent;
+}
+
+input[type=range].multiRange:last-child {
+  background: #333333;
 }*, *:before, *:after {
   box-sizing: border-box;
 }
@@ -377,4 +481,17 @@ canvas#arms {
 }
 canvas#curve {
   z-index: 2
+}
+
+
+.glitchButton .glitchOpenWindowElement{
+  right: auto!important;
+}
+.glitchButton .tooltip.border {
+  left: 18px;
+  right: auto!important;
+}
+.glitchButton .tooltip.fill {
+  left: 18px;
+  right: auto!important;
 }

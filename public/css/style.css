@@ -71,3 +71,16 @@ canvas#arms {
 canvas#curve {
   z-index: 2
 }
+
+
+.glitchButton .glitchOpenWindowElement{
+  right: auto!important;
+}
+.glitchButton .tooltip.border {
+  left: 18px;
+  right: auto!important;
+}
+.glitchButton .tooltip.fill {
+  left: 18px;
+  right: auto!important;
+}
