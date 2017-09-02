@@ -1,18 +1,11 @@
-const Color = require('color');
 import Zepto from 'zepto';
 import Arm from './Arm';
 import FKSystem from './FKSystem';
 import Param from './Param';
+import Palette from './Palette';
 import {onTapHold} from './utils';
 
-// colors below come from https://noni.cmiscm.com/ by Jongmin Kim
-let colors = ["#FFFFFF", "#FFEB3B", "#FFC107", "#FF9800", "#FF5722", "#795548", "#607D8B",
-  "#F44336", "#E91E63", "#9C27B0", "#673AB7", "#3F51B5", "#2196F3", "#03A9F4",
-  "#00BCD4", "#009688", "#4CAF50", "#8BC34A", "#CDDC39"
-];
-let baseColors = colors.map(function(color) {
-  return new Color(color);
-});
+let palette = new Palette();
 
 // console.clear();
 
@@ -43,7 +36,7 @@ Zepto(function($) {
   armsCanvas.height = curveCanvas.height = height,
   curveCtx.fillStyle = "rgba(0,0,0,0)";
   curveCtx.fillRect(0, 0, width, width);
-  curveCtx.strokeStyle = baseColors[0];
+  curveCtx.strokeStyle = palette.colors[0].hex();
   console.log(curveCtx.strokeStyle);
 
   let maxLen = Math.min(width, height) / 2;
@@ -94,13 +87,7 @@ Zepto(function($) {
     // var deltaT = t - lastFrameTime;
     // lastFrameTime = t;
     curveCtx.lineWidth = param.lineWidth;
-
-    let colorIndex = (
-        Math.floor(Math.abs(fk.t) / param.colorChangePeriod)
-        + param.changeColorTimes
-      ) % (baseColors.length - 1);
-    let mixRate = fk.t % param.colorChangePeriod / param.colorChangePeriod;
-    curveCtx.strokeStyle = baseColors[colorIndex].mix(baseColors[colorIndex + 1], mixRate).string();
+    curveCtx.strokeStyle = palette.mix(fk.t, param.colorChangePeriod, param.changeColorTimes);
 
     fk.lastArm.color = curveCtx.strokeStyle;
     let {x, y} = {x: fk.lastArm.endX, y: fk.lastArm.endY};
